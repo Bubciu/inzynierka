@@ -130,8 +130,8 @@ dmypy.json
 cython_debug/
 
 desktopApp/evaluation/_model/
-modelTrening/correctness/
-modelTrening/CSVs/
-modelTrening/Models/
-modelTrening/Vids/
-modelTrening/Visualisations/
+modelTraning/correctness/
+modelTraning/CSVs/
+modelTraning/Models/
+modelTraning/Vids/
+modelTraning/Visualisations/
