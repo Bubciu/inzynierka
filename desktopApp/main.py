@@ -23,6 +23,11 @@ warnings.filterwarnings("ignore")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+
+    with open("desktopApp/style/styles.qss", "r") as f:
+        app.setStyleSheet(f.read())
+
     mainWin = MainWindow()
     mainWin.show()
+
     sys.exit(app.exec_())
