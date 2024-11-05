@@ -90,7 +90,7 @@ class CorectnessWidget(QWidget):
         self.camera_and_score_layout.addWidget(self.camera_label)
 
         self.score_label = QLabel()
-        self.score_label.setFont(QFont("Arial", 16))
+        self.score_label.setFont(QFont("Arial", 50))
         self.camera_and_score_layout.addWidget(self.score_label)
 
         self.layout.addLayout(self.camera_and_score_layout)

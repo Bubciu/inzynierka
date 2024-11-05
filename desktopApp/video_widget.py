@@ -76,7 +76,7 @@ class VideoWidget(QWidget):
         self.stats_label = QLabel(
             "Statystyki\n\nJumping Jack: 0\nSide Leg Squat: 0\nSquat: 0\nStanding Sit-up: 0\nSide Bend: 0\nBend: 0")
         font = QFont()
-        font.setPointSize(20)
+        font.setPointSize(30)
         self.stats_label.setFont(font)
         self.stats_layout.addWidget(self.stats_label)
         self.hbox_layout.addLayout(self.stats_layout)
