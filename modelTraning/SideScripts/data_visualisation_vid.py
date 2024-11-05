@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
-from modelTrening.csv_to_tensor import csv_to_ndarray
-from modelTrening.visualisation_functions import visualisation_video
+from ..csv_to_tensor import csv_to_ndarray
+from ..visualisation_functions import visualisation_video
 import os
 
 if __name__ == "__main__":

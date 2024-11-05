@@ -1,5 +1,5 @@
-from modelTrening.os_operations import files_in_directory
-from modelTrening.helper_functions import video_to_file
+from ..os_operations import files_in_directory
+from ..helper_functions import video_to_file
 
 
 if __name__ == "__main__":

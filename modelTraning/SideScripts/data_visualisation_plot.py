@@ -1,9 +1,9 @@
 # import matplotlib.pyplot as plt
 # import numpy as np
-from modelTrening.os_operations import files_in_directory
-from modelTrening.csv_to_tensor import csv_to_ndarray
-from modelTrening.helper_functions import sample
-from modelTrening.visualisation_functions import visualisation_plot
+from ..os_operations import files_in_directory
+from ..csv_to_tensor import csv_to_ndarray
+from ..helper_functions import sample
+from ..visualisation_functions import visualisation_plot
 
 
 PLOT_SAVE_PATH = r"..\Visualisations\Plots"

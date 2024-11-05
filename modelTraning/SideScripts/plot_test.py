@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from modelTrening.csv_to_tensor import csv_to_ndarray
-from modelTrening.helper_functions import sample
+from ..csv_to_tensor import csv_to_ndarray
+from ..helper_functions import sample
 
 
 def plot_data(data: np.ndarray) -> None:
