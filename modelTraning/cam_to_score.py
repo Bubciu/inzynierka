@@ -116,21 +116,18 @@ class TestApp:
             assigned_class_name = self.__classes[assigned_class_idx]
             name = f"{self.__i}_{assigned_class_name.replace(' ', '_').lower()}_{int(torch.round(torch.max(probs) * 100).item())}"
 
-            # visualisation_plot(tmp.cpu().numpy(), f"{name}.png", abspath(r"..\Visualisations\EvaluationPlots"))
-            # visualisation_video(tmp.cpu().numpy(), f"{name}.avi", abspath(r"..\Visualisations\EvaluationVideos"))
-
             self.__i += 1
 
             # print(f"probabilities: {torch.round(probs * 100)}")
 
             if probs.max() > self.__finding_cutoff and assigned_class_idx == self.__current_exercise:
-                self.__amount += 1;
+                self.__amount += 1
                 print(f"class: {assigned_class_name}, amount: {self.__amount}")
-                plt.imsave(fr"Visualisations\EvaluationPlots\{name}.png", tmp.cpu().numpy())
-                visualisation_video(sampled.cpu().numpy(), f"{name}.avi", abspath(r"Visualisations/EvaluationVideos"))
+                plt.imsave(fr"modelTraning\Visualisations\EvaluationPlots\{name}.png", tmp.cpu().numpy())
+                visualisation_video(sampled.cpu().numpy(), f"{name}.avi", abspath(r"modelTraning/Visualisations/EvaluationVideos"))
                 return data[self.__cut_frames_find:]
-            # else:
-            #     print(f"class: NAH, I'd win")
+            else:
+                print(f"class: NAH, I'd win")
 
         return data[self.__cut_frames_nothing:]
 
@@ -293,8 +290,8 @@ if __name__ == "__main__":
     delete_files_in_directory(VIS_PATH / PLOTS_PATH)
     delete_files_in_directory(VIS_PATH / VIDS_PATH)
 
-    MODEL_LOAD_PATH = Path(r'Models')
-    MODEL_LOAD_NAME = f'model_extended_stopido.pth'
+    MODEL_LOAD_PATH = Path(r'modelTraning\\Models')
+    MODEL_LOAD_NAME = f'model.pth'
     MODEL_LOAD_PATH = MODEL_LOAD_PATH / MODEL_LOAD_NAME
     tm = TestModel(7)
     tm.load_state_dict(torch.load(MODEL_LOAD_PATH))

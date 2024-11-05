@@ -106,8 +106,8 @@ def visualisation_video(landmarks: np.ndarray,
         frame = np.ones((width, height, 3), dtype=np.int8) * 50
 
         for landmark in frame_landmarks:
-            x, y = landmark
-            cv2.circle(frame, (int(round(x)), int(round(y))), 6, (0, 255, 0), -1)
+            # x, y = landmark
+            cv2.circle(frame, (int(round(landmark[0])), int(round(landmark[1]))), 6, (0, 255, 0), -1)
 
         video_writer.write(frame)
 
