@@ -57,8 +57,8 @@ class MyThread(QThread):
                     model_ret = exeval.evaluate_data(alldata,
                                                      self.current_exercise if self.current_exercise != 0 else None)
                     alldata = alldata[exercises_dict[model_ret][1]:]
-                    self.decision_signal.emit(model_ret)
-                    print(model_ret)
+                    if model_ret != 0:
+                        self.decision_signal.emit(model_ret)
 
         self.cap.release()
 
@@ -94,7 +94,6 @@ class LiveCameraWidget(QWidget):
             "Side Bend": 0,
             "Bend": 0
         }
-        self.first_decision = True
 
         if not self.exercise_list:
             self.current_exercise = 0
@@ -139,6 +138,17 @@ class LiveCameraWidget(QWidget):
     def open_camera(self):
         if self.camera_thread is None or not self.camera_thread.isRunning():
             self.camera_thread = MyThread(self.current_exercise)
+
+            # setting stats text
+            if self.current_exercise == 0:
+                stats_text = "\n".join([f"{name}: {count}" for name, count in self.exercise_counts.items()])
+                self.score_label.setText(f"Statystyki\n\n{stats_text}")
+            else:
+                self.score_label.setText(f"{exercises_names[self.current_exercise]}: "
+                                                    f"{self.exercise_reps_done}/{self.exercise_reps_to_do}")
+            
+            self.score_label.adjustSize()
+
             self.camera_thread.frame_signal.connect(self.setImage)
             self.camera_thread.decision_signal.connect(self.showDecision)
             self.camera_thread.start()
@@ -163,34 +173,30 @@ class LiveCameraWidget(QWidget):
 
     @Slot(int)
     def showDecision(self, decision):
-        if self.camera_thread is not None:
-            if self.current_exercise == 0:
-                if self.first_decision:
-                    self.first_decision = False
-                    stats_text = "\n".join([f"{name}: {count}" for name, count in self.exercise_counts.items()])
-                    self.score_label.setText(f"Statystyki\n\n{stats_text}")
-                    self.score_label.adjustSize()
-                if decision != 0:  # Ignore "Nothing" decision
-                    exercise_name = exercises_names[decision][0]
-                    self.exercise_counts[exercise_name] += 1
-                    stats_text = "\n".join([f"{name}: {count}" for name, count in self.exercise_counts.items()])
-                    self.score_label.setText(f"Statystyki\n\n{stats_text}")
-                    self.score_label.adjustSize()
-                return
+        if self.camera_thread is None:
+            return
+        
+        if self.current_exercise == 0:
+            exercise_name = exercises_names[decision][0]
+            self.exercise_counts[exercise_name] += 1
+            stats_text = "\n".join([f"{name}: {count}" for name, count in self.exercise_counts.items()])
+            self.score_label.setText(f"Statystyki\n\n{stats_text}")
+            
+        elif decision == self.current_exercise:
+            self.exercise_reps_done += 1
+            if self.exercise_reps_done >= self.exercise_reps_to_do:
+                self.exercise_idx += 1
+                if self.exercise_idx == len(self.exercise_list):
+                    self.current_exercise = 0
+                    self.update_thread_exercise(self.current_exercise)
+                    return
+                else:
+                    self.current_exercise = self.exercise_list[self.exercise_idx][0]
+                    self.update_thread_exercise(self.current_exercise)
+                    self.exercise_reps_to_do = self.exercise_list[self.exercise_idx][1]
+                    self.exercise_reps_done = 0
 
-            if decision == self.current_exercise:
-                self.exercise_reps_done += 1
-                if self.exercise_reps_done >= self.exercise_reps_to_do:
-                    self.exercise_idx += 1
-                    if self.exercise_idx == len(self.exercise_list):
-                        self.current_exercise = 0
-                        self.update_thread_exercise(self.current_exercise)
-                        return
-                    else:
-                        self.current_exercise = self.exercise_list[self.exercise_idx][0]
-                        self.update_thread_exercise(self.current_exercise)
-                        self.exercise_reps_to_do = self.exercise_list[self.exercise_idx][1]
-                        self.exercise_reps_done = 0
             self.score_label.setText(f"{exercises_names[self.current_exercise]}: "
-                                     f"{self.exercise_reps_done}/{self.exercise_reps_to_do}")
-            self.score_label.adjustSize()
+                                        f"{self.exercise_reps_done}/{self.exercise_reps_to_do}")
+            
+        self.score_label.adjustSize()
