@@ -24,10 +24,13 @@ class MyThread(QThread):
         alldata = []
         mp_holistic = mp.solutions.holistic
         self.cap = cv2.VideoCapture(0)
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        self.cap.set(cv2.CAP_PROP_FPS, 15)
 
         with mp_holistic.Holistic(
-                min_detection_confidence=0.5,
-                min_tracking_confidence=0.5) as holistic:
+                min_detection_confidence=0.3,
+                min_tracking_confidence=0.3) as holistic:
 
             while self._is_running and self.cap.isOpened():
                 ret, frame = self.cap.read()
@@ -43,11 +46,13 @@ class MyThread(QThread):
 
                 landmarks = extract_landmarks(results)
 
+                # jeśli istnieją, dodaj do zbioru klatek
                 if landmarks:
                     alldata.append(landmarks)
                 else:
                     continue
 
+                # jeśli mamy wystarczająco klatek, wyślij je do ewaluacji
                 if len(alldata) >= self.nedFrams:
                     model_ret = exeval.evaluate_data(alldata,
                                                      self.current_exercise if self.current_exercise != 0 else None)

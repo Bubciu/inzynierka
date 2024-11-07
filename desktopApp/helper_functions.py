@@ -30,13 +30,18 @@ exercises_names = {
 def extract_landmarks(landmark_list):
     frame_landmarks = {}
     if landmark_list.pose_landmarks:
+        landmarks = landmark_list.pose_landmarks.landmark  # Zmniejszenie liczby odwołań
         for i, ps in enumerate(pose_silhouette):
             if ps in exceptions_silhouette:
                 continue
 
-            landmark_list.pose_landmarks.landmark[i].x = landmark_list.pose_landmarks.landmark[i].x * 720
-            landmark_list.pose_landmarks.landmark[i].y = landmark_list.pose_landmarks.landmark[i].y * 1280
-            frame_landmarks.update({ps: [landmark_list.pose_landmarks.landmark[i].x,
-                                         landmark_list.pose_landmarks.landmark[i].y]})
+            # Sprawdzenie, czy indeks i jest poprawny dla listy landmarków
+            if i < len(landmarks):
+                x = landmarks[i].x * 720
+                y = landmarks[i].y * 1280
+
+                # Bezpośrednie przypisanie zamiast update()
+                frame_landmarks[ps] = [x, y]
 
     return frame_landmarks
+
