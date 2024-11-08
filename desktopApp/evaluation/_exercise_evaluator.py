@@ -44,6 +44,10 @@ class ExerciseEvaluator:
         self.__model.to(self.__device)
         self.__model.eval()
 
+        dummy_input = torch.randn(300, 300, 3).to(self.__device)
+
+        self.__model = torch.jit.trace(self.__model, dummy_input)
+
         self.__finding_cutoff = 0.8
         self.__model_frames = 50
 
@@ -69,7 +73,7 @@ class ExerciseEvaluator:
 
         data_array = np.array([row.tolist() for _, row in df.iterrows()])
         image = ndarray_to_image(sample(data_array, self.__model_frames))
-        tensor = torch.from_numpy(image).type(torch.float32).to(self.__device)
+        tensor = torch.from_numpy(image).to(self.__device, dtype=torch.float32)
 
         with torch.inference_mode():
             logit = self.__model(tensor)
