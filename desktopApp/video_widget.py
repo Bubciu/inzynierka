@@ -41,7 +41,7 @@ class VideoThread(QThread):
             if len(alldata) >= exercises_dict[0][0]:
                 model_ret = exeval.evaluate_data(alldata)
                 if model_ret != 0:
-                    alldata = alldata[35:]
+                    alldata = alldata[40:]
                     self.decision_signal.emit(model_ret)
                 else:
                     alldata = alldata[exercises_dict[0][1]:]
