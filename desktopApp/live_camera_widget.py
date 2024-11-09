@@ -6,6 +6,9 @@ from evaluation import *
 import mediapipe as mp
 from helper_functions import extract_landmarks, exercises_dict, exercises_names
 
+from datetime import datetime
+import time
+
 exeval = ExerciseEvaluator()
 
 
@@ -26,16 +29,26 @@ class MyThread(QThread):
         self.cap = cv2.VideoCapture(0)
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-        self.cap.set(cv2.CAP_PROP_FPS, 15)
+
+        frame_rate = 24
+        prev = 0
 
         with mp_holistic.Holistic(
                 min_detection_confidence=0.3,
                 min_tracking_confidence=0.3) as holistic:
 
             while self._is_running and self.cap.isOpened():
+                time_elapsed = time.time() - prev
+
                 ret, frame = self.cap.read()
                 if not ret:
                     break
+
+                if time_elapsed <= 1./frame_rate:
+                    continue
+
+                prev = time.time()
+
                 label_frame = self.cvimage_to_label(frame)
                 self.frame_signal.emit(label_frame)
 
@@ -57,6 +70,11 @@ class MyThread(QThread):
                     model_ret = exeval.evaluate_data(alldata,
                                                      self.current_exercise if self.current_exercise != 0 else None)
                     alldata = alldata[exercises_dict[model_ret][1]:]
+
+                    #now = datetime.now()
+                    #current_time = now.strftime("%H:%M:%S.%f")[:-3]
+                    #print("Current Time =", current_time, "Model score:", model_ret)
+
                     if model_ret != 0:
                         self.decision_signal.emit(model_ret)
 

@@ -8,7 +8,7 @@ exceptions_silhouette = ['LEFT_EYE_INNER', 'LEFT_EYE_OUTER', 'RIGHT_EYE_INNER', 
                          'LEFT_EAR', 'RIGHT_EAR', 'MOUTH_LEFT', 'MOUTH_RIGHT']
 
 exercises_dict = {
-    0: [50, 5],     #all
+    0: [50, 10],     #all
     1: [25, 20],    #Jumping Jacks
     2: [50, 40],    #Side Leg Squat
     3: [40, 30],    #Squat
