@@ -50,6 +50,9 @@ class CorrectnessEvaluator:
         self.__model.to(self.__device)
         self.__model.eval()
 
+        dummy_input = torch.randn(300, 300, 3).to(self.__device)
+        self.__model = torch.jit.trace(self.__model, dummy_input)
+
         self.__model_frames = 50
 
     def evaluate_data(self, data):

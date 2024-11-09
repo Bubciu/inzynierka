@@ -18,6 +18,7 @@ class MyThread(QThread):
         self._is_running = True
         self.cap = None
         self.current_exercise = current_exercise
+        self.nedFrams = exercises_dict[current_exercise][0]
         self.exercise_evaluator = ExerciseEvaluator()  # Inicjalizacja evaluatora ćwiczeń
         self.correctness_evaluator = CorrectnessEvaluator(current_exercise)  # Inicjalizacja evaluatora poprawności
 
@@ -25,12 +26,18 @@ class MyThread(QThread):
         alldata = []
         mp_holistic = mp.solutions.holistic
         self.cap = cv2.VideoCapture(0)
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
-        with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
+        with mp_holistic.Holistic(
+            min_detection_confidence=0.5, 
+            min_tracking_confidence=0.5) as holistic:
+
             while self._is_running and self.cap.isOpened():
                 ret, frame = self.cap.read()
                 if not ret:
                     break
+                
                 label_frame = self.cvimage_to_label(frame)
                 self.frame_signal.emit(label_frame)
 
@@ -42,13 +49,16 @@ class MyThread(QThread):
                 landmarks = extract_landmarks(results)
                 if landmarks:
                     alldata.append(landmarks)
+                else:
+                    continue
 
-                if len(alldata) >= 50:
+                if len(alldata) >= self.nedFrams:
                     detected_exercise = self.exercise_evaluator.evaluate_data(alldata, self.current_exercise)
 
                     if detected_exercise == self.current_exercise:
                         correctness = self.correctness_evaluator.evaluate_data(alldata)
                         self.decision_signal.emit(correctness)  # Emitujemy wynik wykrycia i poprawności
+
                     alldata = alldata[exercises_dict[detected_exercise][1]:]
 
         self.cap.release()
@@ -59,6 +69,7 @@ class MyThread(QThread):
 
     def update_exercise(self, new_exercise):
         self.current_exercise = new_exercise
+        self.nedFrams = exercises_dict[new_exercise][0]
         self.correctness_evaluator = CorrectnessEvaluator(new_exercise)  # Aktualizacja evaluatora poprawności
 
     @staticmethod
