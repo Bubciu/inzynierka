@@ -16,6 +16,10 @@ class MainWidget(QWidget):
 
         self.stacked_layout = QStackedLayout()
 
+        # settings
+        self.cam_frame_mult = 1.0
+        self.vid_frame_mult = 1.2
+
         # Initialize main buttons
         self.live_camera_button = QPushButton("Live Camera")
         self.live_camera_button.setIcon(QIcon("icons/videocam.svg"))
@@ -74,23 +78,27 @@ class MainWidget(QWidget):
         self.workout_plans_widget = None
         self.settings_widget = None
 
+
     def show_live_camera(self):
-        self.live_camera_widget = LiveCameraWidget(self.back_button, self.exercise_list)
+        self.live_camera_widget = LiveCameraWidget(self.back_button, self.exercise_list, self.cam_frame_mult)
         self.stacked_layout.addWidget(self.live_camera_widget)
         self.stacked_layout.setCurrentWidget(self.live_camera_widget)
         self.back_button.show()
 
+
     def show_video(self):
-        self.video_widget = VideoWidget(self.back_button)
+        self.video_widget = VideoWidget(self.back_button, self.vid_frame_mult)
         self.stacked_layout.addWidget(self.video_widget)
         self.stacked_layout.setCurrentWidget(self.video_widget)
         self.back_button.show()
 
+
     def show_corectness(self):
-        self.corectness_widget = CorectnessWidget(self.back_button)
+        self.corectness_widget = CorectnessWidget(self.back_button, self.cam_frame_mult)
         self.stacked_layout.addWidget(self.corectness_widget)
         self.stacked_layout.setCurrentWidget(self.corectness_widget)
         self.back_button.show()
+
 
     def show_workout_plans(self):
         self.workout_plans_widget = WorkoutPlansWidget(self.back_button, self.exercise_list)
@@ -98,17 +106,28 @@ class MainWidget(QWidget):
         self.stacked_layout.setCurrentWidget(self.workout_plans_widget)
         self.back_button.show()
 
+
     def show_settings(self):
         self.settings_widget = SettingsWidget(self.back_button)
         self.stacked_layout.addWidget(self.settings_widget)
         self.stacked_layout.setCurrentWidget(self.settings_widget)
         self.back_button.show()
 
+
     def show_main(self):
         if self.workout_plans_widget:
             self.exercise_list = self.workout_plans_widget.get_exercise_list()
         self.stacked_layout.setCurrentWidget(self.main_widget)
         self.back_button.hide()
+
+
+    def update_cam_frame_mult(self, value):
+        self.cam_frame_mult = value
+
+
+    def update_vid_frame_mult(self, value):
+        self.vid_frame_mult = value
+
 
     @staticmethod
     def exit_app():

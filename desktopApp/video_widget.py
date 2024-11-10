@@ -7,6 +7,7 @@ from evaluation import ExerciseEvaluator
 from helper_functions import extract_landmarks, exercises_dict, exercises_names
 
 exeval = ExerciseEvaluator()
+fps_mult=0.0
 
 
 class VideoThread(QThread):
@@ -55,8 +56,11 @@ class VideoThread(QThread):
 
 
 class VideoWidget(QWidget):
-    def __init__(self, back_button):
+    def __init__(self, back_button, video_fps_mult):
         super().__init__()
+
+        fps_mult = video_fps_mult
+
         self.layout = QVBoxLayout()
 
         self.file_button = QPushButton("Wybierz plik")

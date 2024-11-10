@@ -8,6 +8,7 @@ from evaluation import *
 from helper_functions import extract_landmarks, exercises_dict, exercises_names
 from evaluation import *
 
+fps_mult = 0.0
 
 class MyThread(QThread):
     frame_signal = Signal(QImage)
@@ -79,8 +80,11 @@ class MyThread(QThread):
 
 
 class CorectnessWidget(QWidget):
-    def __init__(self, back_button):
+    def __init__(self, back_button, camera_fps_mult):
         super().__init__()
+
+        fps_mult = camera_fps_mult
+
         self.correct_reps = 0
         self.incorrect_reps = 0
         self.current_exercise = 1

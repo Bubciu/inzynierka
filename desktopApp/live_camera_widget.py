@@ -7,6 +7,7 @@ import mediapipe as mp
 from helper_functions import extract_landmarks, exercises_dict, exercises_names
 
 exeval = ExerciseEvaluator()
+fps_mult = 0.0
 
 
 class MyThread(QThread):
@@ -82,7 +83,7 @@ class MyThread(QThread):
 
 
 class LiveCameraWidget(QWidget):
-    def __init__(self, back_button, exercise_list=None):
+    def __init__(self, back_button, exercise_list=None, camera_fps_mult=0.0):
         super().__init__()
         self.exercise_reps_done = 0
         self.exercise_list = exercise_list
@@ -102,6 +103,8 @@ class LiveCameraWidget(QWidget):
         else:
             self.current_exercise = exercise_list[self.exercise_idx][0]
             self.exercise_reps_to_do = exercise_list[self.exercise_idx][1]
+
+        fps_mult = camera_fps_mult
 
         self.layout = QVBoxLayout()
 
