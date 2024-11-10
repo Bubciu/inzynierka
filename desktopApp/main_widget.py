@@ -108,7 +108,7 @@ class MainWidget(QWidget):
 
 
     def show_settings(self):
-        self.settings_widget = SettingsWidget(self.back_button)
+        self.settings_widget = SettingsWidget(self.back_button, self)
         self.stacked_layout.addWidget(self.settings_widget)
         self.stacked_layout.setCurrentWidget(self.settings_widget)
         self.back_button.show()
@@ -121,11 +121,11 @@ class MainWidget(QWidget):
         self.back_button.hide()
 
 
-    def update_cam_frame_mult(self, value):
+    def set_cam_frame_mult(self, value):
         self.cam_frame_mult = value
 
 
-    def update_vid_frame_mult(self, value):
+    def set_vid_frame_mult(self, value):
         self.vid_frame_mult = value
 
 

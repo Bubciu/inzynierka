@@ -39,13 +39,13 @@ class VideoThread(QThread):
             landmarks = extract_landmarks(results)
             if landmarks:
                 alldata.append(landmarks)
-            if len(alldata) >= exercises_dict[0][0]:
+            if len(alldata) >= (exercises_dict[0][0] * fps_mult):
                 model_ret = exeval.evaluate_data(alldata)
                 if model_ret != 0:
                     alldata = alldata[40:]
                     self.decision_signal.emit(model_ret)
                 else:
-                    alldata = alldata[exercises_dict[0][1]:]
+                    alldata = alldata[int(exercises_dict[0][1] * fps_mult):]
 
         self.cap.release()
         self.finished_signal.emit()
@@ -59,6 +59,7 @@ class VideoWidget(QWidget):
     def __init__(self, back_button, video_fps_mult):
         super().__init__()
 
+        global fps_mult 
         fps_mult = video_fps_mult
 
         self.layout = QVBoxLayout()

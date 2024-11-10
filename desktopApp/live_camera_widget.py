@@ -18,7 +18,7 @@ class MyThread(QThread):
         super().__init__()
         self._is_running = True
         self.cap = None
-        self.nedFrams = exercises_dict[0][0]
+        self.nedFrams = exercises_dict[0][0] * fps_mult
         self.current_exercise = current_exercise
 
     def run(self):
@@ -57,7 +57,7 @@ class MyThread(QThread):
                 if len(alldata) >= self.nedFrams:
                     model_ret = exeval.evaluate_data(alldata,
                                                      self.current_exercise if self.current_exercise != 0 else None)
-                    alldata = alldata[exercises_dict[model_ret][1]:]
+                    alldata = alldata[int(exercises_dict[model_ret][1] * fps_mult):]
 
                     if model_ret != 0:
                         self.decision_signal.emit(model_ret)
@@ -70,7 +70,7 @@ class MyThread(QThread):
 
     def update_exercise(self, new_exercise):
         self.current_exercise = new_exercise
-        self.nedFrams = exercises_dict[new_exercise][0]
+        self.nedFrams = exercises_dict[new_exercise][0] * fps_mult
 
     @staticmethod
     def cvimage_to_label(image):
@@ -104,6 +104,7 @@ class LiveCameraWidget(QWidget):
             self.current_exercise = exercise_list[self.exercise_idx][0]
             self.exercise_reps_to_do = exercise_list[self.exercise_idx][1]
 
+        global fps_mult
         fps_mult = camera_fps_mult
 
         self.layout = QVBoxLayout()

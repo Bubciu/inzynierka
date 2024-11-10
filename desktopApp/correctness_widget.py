@@ -19,7 +19,7 @@ class MyThread(QThread):
         self._is_running = True
         self.cap = None
         self.current_exercise = current_exercise
-        self.nedFrams = exercises_dict[current_exercise][0]
+        self.nedFrams = exercises_dict[current_exercise][0] * fps_mult
         self.exercise_evaluator = ExerciseEvaluator()  # Inicjalizacja evaluatora ćwiczeń
         self.correctness_evaluator = CorrectnessEvaluator(current_exercise)  # Inicjalizacja evaluatora poprawności
 
@@ -60,7 +60,7 @@ class MyThread(QThread):
                         correctness = self.correctness_evaluator.evaluate_data(alldata)
                         self.decision_signal.emit(correctness)  # Emitujemy wynik wykrycia i poprawności
 
-                    alldata = alldata[exercises_dict[detected_exercise][1]:]
+                    alldata = alldata[int(exercises_dict[detected_exercise][1] *fps_mult):]
 
         self.cap.release()
 
@@ -70,7 +70,7 @@ class MyThread(QThread):
 
     def update_exercise(self, new_exercise):
         self.current_exercise = new_exercise
-        self.nedFrams = exercises_dict[new_exercise][0]
+        self.nedFrams = exercises_dict[new_exercise][0] * fps_mult
         self.correctness_evaluator = CorrectnessEvaluator(new_exercise)  # Aktualizacja evaluatora poprawności
 
     @staticmethod
@@ -83,6 +83,7 @@ class CorectnessWidget(QWidget):
     def __init__(self, back_button, camera_fps_mult):
         super().__init__()
 
+        global fps_mult
         fps_mult = camera_fps_mult
 
         self.correct_reps = 0
