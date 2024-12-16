@@ -7,6 +7,7 @@ import time
 import mediapipe as mp
 import os
 import matplotlib.pyplot as plt
+import math
 
 
 def round_list(in_list):
@@ -15,6 +16,8 @@ def round_list(in_list):
     :param in_list: list of float values to be rounded
     :return: new list with rounded values
     """
+    if in_list != in_list:
+        in_list = [float('nan'), float('nan')]
     return [round(x, 3) for x in in_list]
 
 
