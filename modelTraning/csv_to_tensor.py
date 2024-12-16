@@ -23,10 +23,10 @@ def csv_to_ndarray(csv_path: str) -> np.array:
 
             inner = list()
             for val in line:
-                if val != '' and val != '\n':
+                try:
                     elem = literal_eval(val)
-                else:
-                    elem = [0., 0.]
+                except (ValueError, SyntaxError) as e:
+                    return 1
                 inner.append(elem)
             outer.append(inner)
 
