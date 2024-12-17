@@ -19,9 +19,9 @@ from test_model import TestModelBinary
 
 IMPORT_MODEL = False
 SAVE_MODEL = True
-MODEL_PATH = 'correctness/models'
+MODEL_PATH = 'correctness/modelsV2'
 MODEL_IMPORT_NAME = ''
-MODEL_SAVE_NAME = 'model_sklonBok'
+MODEL_SAVE_NAME = 'model_brzuszek'
 """
 Model hyper-parameters.
 """
@@ -32,7 +32,7 @@ Number of output classes for the model.
 """
 
 LEARNING_RATE = 0.00001
-EPOCHS = 1000
+EPOCHS = 2000
 BATCH_SIZE = 20
 """
 Learning parameters.
@@ -48,7 +48,7 @@ N_SAMPLES = 50
 Number of samples to use for each instance.
 """
 
-DATA_PATH = "correctness/CSVs/sklonBok"
+DATA_PATH = "correctness/CSVs/brzuszek"
 """
 Path to the directory containing CSV data files.
 """
@@ -72,8 +72,12 @@ if __name__ == "__main__":
     primitive_labels = []
 
     for i, name in enumerate(names):
-        # sep = '/' if oo.IS_WINDOWS else '\\'
         tmp = csv_to_ndarray(fr'{DATA_PATH}/{name}')
+
+        if isinstance(tmp, int) and tmp == 1:
+            print(f'{i}: name: {name}\t <dropped>')
+            continue
+
         print(f'{i}: name: {name}\t shape: {tmp.shape}', end='\t')
 
         if tmp.shape[1] != N_LANDMARKS or tmp.shape[0] < N_SAMPLES:
@@ -88,7 +92,6 @@ if __name__ == "__main__":
 
         # plot_data(tmp)
 
-        # tu była zmiana
         if name[0] == 'n':
             primitive_labels.append(0)
         elif name[0] == 'p':
@@ -164,7 +167,7 @@ if __name__ == "__main__":
 
             loss_test = loss_fn(y_test_logits, y_test.float())
             acc_test = accuracy_fn(y_test, y_test_pred)
-            if epoch % 50 == 0:
+            if epoch % 100 == 0:
                 print(f'Epoch: {epoch} | Train loss: {loss_train:.5f} | Train acc: {acc_train:.2f}% ||'
                       f'Test loss: {loss_test:.5f} | Test acc: {acc_test:.2f}%')
 
