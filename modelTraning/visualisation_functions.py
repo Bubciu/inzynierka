@@ -17,14 +17,6 @@ def visualisation_plot(landmarks: np.ndarray,
     :return: None
     """
 
-    # fig, axs = plt.subplots(1, 2, figsize=(10, 8))
-    # plt.tight_layout(pad=1.5)
-    # fig.suptitle(f"{output_image_name[:output_image_name.rfind('.')+1]}")
-    # axs[0].imshow(landmarks[:, :, 0])
-    # axs[0].set_title("x_pos")
-    # axs[1].imshow(landmarks[:, :, 1])
-    # axs[1].set_title("y_pos")
-
     fig, axs = plt.subplots(1, 2, figsize=(3, 3))
     plt.tight_layout(pad=0)
 
@@ -52,16 +44,8 @@ def visualisation_plot(landmarks: np.ndarray,
     image_flat = np.frombuffer(canvas.tostring_rgb(), dtype='uint8')  # (H * W * 3,)
     image = image_flat.reshape(*reversed(canvas.get_width_height()), 3)  # (H, W, 3)
 
-    # plt.savefig(rf"{save_path}\{output_image_name}")
-
     plt.imsave(rf"{save_path}\{output_image_name}", image)
     plt.close()
-
-    # if show:
-    #     plt.show()
-    # else:
-    #     fig.clear()
-    #     plt.close()
 
 
 def ndarray_to_image(landmarks: np.ndarray, show: bool = False) -> np.ndarray:
