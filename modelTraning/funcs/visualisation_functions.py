@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 
 
 def visualisation_plot(landmarks: np.ndarray,
@@ -84,8 +85,74 @@ def ndarray_to_image(landmarks: np.ndarray, show: bool = False) -> np.ndarray:
     image = image_flat.reshape(*reversed(canvas.get_width_height()), 3)  # (H, W, 3)
 
     if show:
-        # cv2.imshow('win', image)
-        # cv2.waitKey(0)
+        plt.show()
+    else:
+        fig.clear()
+        plt.close()
+
+    return image / 255.0
+
+
+def visualisation_heatmap(landmarks: np.ndarray,
+                       output_image_name: str = "heatmap.png",
+                       save_path: str = ".\\",
+                       show: bool = False) -> None:
+    """
+        Function creates heatmap as png from provided array containing landmarks' x and y coordinates.
+        :param landmarks: 3-dimensional numpy array with landmarks' coordinates in frames
+        :param output_image_name: Name of the output image. If not provided, the plot will be saved as "output_plot.png"
+        :param save_path: Full path to a directory to where image should be saved.
+            If not provided, the image will be saved in current directory.
+        :param show: Specifies if the image should be shown.
+        :return: None
+    """
+    num_frames, num_points, _ = landmarks.shape
+
+    colormap = cm.get_cmap('tab20c', 25)
+
+    plt.figure(figsize=(3, 3))
+
+    for point_idx in range(num_points):
+        x_coords = landmarks[:, point_idx, 0]
+        y_coords = landmarks[:, point_idx, 1]
+        plt.plot(x_coords, y_coords, color=colormap(point_idx))
+
+    plt.axis('off')
+
+    save_full_path = rf"{save_path}\{output_image_name}"
+    plt.savefig(save_full_path, bbox_inches='tight', pad_inches=0)
+    if show:
+        plt.show()
+    plt.close()
+
+
+def ndarray_to_heatmap(landmarks: np.ndarray, show: bool = False) -> np.ndarray:
+    """
+        Function creates heatmap as png from provided array containing landmarks' x and y coordinates.
+        :param landmarks: 3-dimensional numpy array with landmarks' coordinates in frames
+        :param show: Specifies if the image should be shown.
+        :return: Image with pixel colour in rage <0, 1>.
+    """
+    num_frames, num_points, _ = landmarks.shape
+    
+    colormap = cm.get_cmap('tab20c', 25)
+
+    fig, ax = plt.subplots(figsize=(8, 8))
+    
+    for point_idx in range(num_points):
+        x_coords = landmarks[:, point_idx, 0]
+        y_coords = landmarks[:, point_idx, 1]
+        ax.plot(x_coords, y_coords, color=colormap(point_idx))
+
+    ax.axis('off')
+
+    canvas = fig.canvas
+    canvas.draw()
+
+    image_flat = np.frombuffer(canvas.tostring_rgb(), dtype='uint8')
+    image = image_flat.reshape(*reversed(canvas.get_width_height()), 3)
+
+    if show:
         plt.show()
     else:
         fig.clear()

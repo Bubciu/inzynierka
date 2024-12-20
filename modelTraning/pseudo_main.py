@@ -10,10 +10,10 @@ from sklearn.model_selection import train_test_split
 
 import time
 
-from csv_to_tensor import csv_to_ndarray, ndarray_to_tensor
-import os_operations as oo
-from helper_functions import accuracy_fn, sample, import_model_state_dict, save_model
-from visualisation_functions import ndarray_to_image
+from funcs.csv_to_tensor import csv_to_ndarray, ndarray_to_tensor
+import funcs.os_operations as oo
+from funcs.helper_functions import accuracy_fn, sample, import_model_state_dict, save_model
+from funcs.visualisation_functions import ndarray_to_image
 
 from test_model import TestModel
 
