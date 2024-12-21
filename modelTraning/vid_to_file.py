@@ -3,8 +3,8 @@ This script loads videos and runs video_to_file function which processes the vid
 and saves them as csv files in directory specified in path_out variable.
 """
 
-from os_operations import files_in_directory
-from helper_functions import video_to_file
+from funcs.os_operations import files_in_directory
+from funcs.helper_functions import video_to_file
 
 if __name__ == "__main__":
 

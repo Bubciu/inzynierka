@@ -1,7 +1,7 @@
 from torch import nn
 
 
-class TestModel(nn.Module):
+class ImageModel(nn.Module):
     """
     Neural network class.
     This class defines a convolutional neural network with two convolutional layers followed by
@@ -53,7 +53,7 @@ class TestModel(nn.Module):
         return x
 
 
-class TestModelBinary(nn.Module):
+class ImageModelBinary(nn.Module):
     """
     Neural network class.
     This class defines a convolutional neural network with two convolutional layers followed by

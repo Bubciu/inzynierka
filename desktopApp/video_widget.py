@@ -6,8 +6,8 @@ import mediapipe as mp
 from evaluation import ExerciseEvaluator
 from helper_functions import extract_landmarks, exercises_dict, exercises_names
 
-exeval = ExerciseEvaluator()
-fps_mult=0.0
+fps_mult = 0.0
+process = ''
 
 
 class VideoThread(QThread):
@@ -20,6 +20,7 @@ class VideoThread(QThread):
         self.video_path = video_path
         self._is_running = True
         self.cap = None
+        self.exeval = ExerciseEvaluator(process)
 
     def run(self):
         self.cap = cv2.VideoCapture(self.video_path)
@@ -40,7 +41,7 @@ class VideoThread(QThread):
             if landmarks:
                 alldata.append(landmarks)
             if len(alldata) >= (exercises_dict[0][0] * fps_mult):
-                model_ret = exeval.evaluate_data(alldata)
+                model_ret = self.exeval.evaluate_data(alldata)
                 if model_ret != 0:
                     alldata = alldata[40:]
                     self.decision_signal.emit(model_ret)
@@ -56,11 +57,13 @@ class VideoThread(QThread):
 
 
 class VideoWidget(QWidget):
-    def __init__(self, back_button, video_fps_mult):
+    def __init__(self, back_button, video_fps_mult, process_option):
         super().__init__()
 
         global fps_mult 
         fps_mult = video_fps_mult
+        global process
+        process = process_option
 
         self.layout = QVBoxLayout()
 

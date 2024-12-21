@@ -10,19 +10,19 @@ from sklearn.model_selection import train_test_split
 
 import time
 
-from csv_to_tensor import csv_to_ndarray, ndarray_to_tensor
-import os_operations as oo
-from helper_functions import accuracy_fn, sample, import_model_state_dict, save_model
-from visualisation_functions import ndarray_to_image
+from funcs.csv_to_tensor import csv_to_ndarray, ndarray_to_tensor
+import funcs.os_operations as oo
+from funcs.helper_functions import accuracy_fn, sample, import_model_state_dict, save_model
+from funcs.visualisation_functions import ndarray_to_image, ndarray_to_heatmap
 
-from test_model import TestModel
+from models import ImageModel
 
 
 IMPORT_MODEL = False
-SAVE_MODEL = True
+SAVE_MODEL = False
 MODEL_PATH = 'Models'
 MODEL_IMPORT_NAME = ''
-MODEL_SAVE_NAME = 'model_v6'
+MODEL_SAVE_NAME = ''
 """
 Model hyper-parameters.
 """
@@ -56,6 +56,16 @@ Path to the directory containing CSV data files.
 
 FILE_EXTENSION = ".csv"
 
+DATA_FORMAT = "heatmaps"
+"""
+Format of data that goes to model
+possible options:
+- unchanged
+- plots
+- heatmaps
+"""
+
+
 if __name__ == "__main__":
     """
     Main script execution.
@@ -88,10 +98,19 @@ if __name__ == "__main__":
         print('<accepted>')
 
         tmp = sample(tmp, N_SAMPLES)
-        tmp = ndarray_to_image(tmp)
-        primitive_data.append(tmp)
 
-        #plot_data(tmp)
+        if DATA_FORMAT == "unchanged":
+            # to do
+            exit(0)
+        elif DATA_FORMAT == "plots":
+            tmp = ndarray_to_image(tmp)
+        elif DATA_FORMAT == "heatmaps":
+            tmp = ndarray_to_heatmap(tmp)
+        else:
+            print("Wrong data format")
+            exit(0)
+
+        primitive_data.append(tmp)
 
         if 'nic' in name:
             primitive_labels.append(0)
@@ -126,9 +145,9 @@ if __name__ == "__main__":
     print("test size:", X_test.shape)
 
     if IMPORT_MODEL:
-        rm = import_model_state_dict(TestModel, NUM_CLASSES, MODEL_PATH, MODEL_IMPORT_NAME)
+        rm = import_model_state_dict(ImageModel, NUM_CLASSES, MODEL_PATH, MODEL_IMPORT_NAME)
     else:
-        rm = TestModel(NUM_CLASSES)
+        rm = ImageModel(NUM_CLASSES)
 
     rm.to(device)
 

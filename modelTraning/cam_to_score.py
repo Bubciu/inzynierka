@@ -3,13 +3,13 @@ import matplotlib.pyplot as plt
 import mediapipe as mp
 import numpy as np
 import pandas as pd
-from helper_functions import sample, round_list, delete_files_in_directory
+from funcs.helper_functions import sample, round_list, delete_files_in_directory
 from pathlib import Path
-from test_model import TestModel
+from models import TestModel
 import torch
 from os.path import abspath
 from math import ceil
-from visualisation_functions import visualisation_video, ndarray_to_image
+from funcs.visualisation_functions import visualisation_video, ndarray_to_image
 import warnings
 
 

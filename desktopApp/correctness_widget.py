@@ -9,10 +9,12 @@ from helper_functions import extract_landmarks, exercises_dict, exercises_names
 from evaluation import *
 
 fps_mult = 0.0
+process = ''
+
 
 class MyThread(QThread):
     frame_signal = Signal(QImage)
-    decision_signal = Signal(int)  # Zmiana: wysyłamy wynik wykrycia i poprawności
+    decision_signal = Signal(int)
 
     def __init__(self, current_exercise):
         super().__init__()
@@ -20,8 +22,8 @@ class MyThread(QThread):
         self.cap = None
         self.current_exercise = current_exercise
         self.nedFrams = exercises_dict[current_exercise][0] * fps_mult
-        self.exercise_evaluator = ExerciseEvaluator()  # Inicjalizacja evaluatora ćwiczeń
-        self.correctness_evaluator = CorrectnessEvaluator(current_exercise)  # Inicjalizacja evaluatora poprawności
+        self.exercise_evaluator = ExerciseEvaluator(process)
+        self.correctness_evaluator = CorrectnessEvaluator(current_exercise, process)
 
     def run(self):
         alldata = []
@@ -58,7 +60,7 @@ class MyThread(QThread):
 
                     if detected_exercise == self.current_exercise:
                         correctness = self.correctness_evaluator.evaluate_data(alldata)
-                        self.decision_signal.emit(correctness)  # Emitujemy wynik wykrycia i poprawności
+                        self.decision_signal.emit(correctness)
 
                     alldata = alldata[int(exercises_dict[detected_exercise][1] *fps_mult):]
 
@@ -80,11 +82,13 @@ class MyThread(QThread):
 
 
 class CorectnessWidget(QWidget):
-    def __init__(self, back_button, camera_fps_mult):
+    def __init__(self, back_button, camera_fps_mult, process_option):
         super().__init__()
 
         global fps_mult
         fps_mult = camera_fps_mult
+        global process
+        process = process_option
 
         self.correct_reps = 0
         self.incorrect_reps = 0
