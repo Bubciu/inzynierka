@@ -2,9 +2,10 @@ import torch
 from torch import nn
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 
 
-class ExerciseEvaluationModel(nn.Module):
+class ExerciseEvaluationImageModel(nn.Module):
     """
     Neural network class.
     This class defines a convolutional neural network with two convolutional layers followed by
@@ -57,7 +58,7 @@ class ExerciseEvaluationModel(nn.Module):
         return x
 
 
-class CorectnessEvaluationModel(nn.Module):
+class CorectnessEvaluationImageModel(nn.Module):
     """
     Neural network class.
     This class defines a convolutional neural network with two convolutional layers followed by
@@ -119,7 +120,7 @@ def sample(data: np.ndarray, number_of_samples: int) -> np.ndarray:
     return data[np.sort(np.random.choice(data.shape[0], number_of_samples, False))]
 
 
-def ndarray_to_image(landmarks: np.ndarray, show: bool = False) -> np.ndarray:
+def ndarray_to_plot(landmarks: np.ndarray) -> np.ndarray:
     """
     Function creates image (.png) from provided array containing landmarks' x and y coordinates.
     :param landmarks: 3-dimensional numpy array with landmarks' coordinates in frames
@@ -154,13 +155,34 @@ def ndarray_to_image(landmarks: np.ndarray, show: bool = False) -> np.ndarray:
     image_flat = np.frombuffer(canvas.tostring_rgb(), dtype='uint8')  # (H * W * 3,)
     image = image_flat.reshape(*reversed(canvas.get_width_height()), 3)  # (H, W, 3)
 
-    if show:
-        # cv2.imshow('win', image)
-        # cv2.waitKey(0)
-        plt.show()
-    else:
-        fig.clear()
-        plt.close()
+    fig.clear()
+    plt.close()
+
+    return image / 255.0
+
+
+def ndarray_to_trajectory(landmarks: np.ndarray) -> np.ndarray:
+    num_frames, num_points, _ = landmarks.shape
+        
+    colormap = cm.get_cmap('tab20c', 25)
+
+    fig, ax = plt.subplots(figsize=(3, 3))
+    
+    for point_idx in range(num_points):
+        x_coords = landmarks[:, point_idx, 0]
+        y_coords = landmarks[:, point_idx, 1]
+        ax.plot(x_coords, y_coords, color=colormap(point_idx))
+
+    ax.axis('off')
+
+    canvas = fig.canvas
+    canvas.draw()
+
+    image_flat = np.frombuffer(canvas.tostring_rgb(), dtype='uint8')
+    image = image_flat.reshape(*reversed(canvas.get_width_height()), 3)
+
+    fig.clear()
+    plt.close()
 
     return image / 255.0
 

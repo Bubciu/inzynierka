@@ -17,42 +17,43 @@ class MainWidget(QWidget):
         self.stacked_layout = QStackedLayout()
 
         # settings
+        self.process = 'plot'
         self.cam_frame_mult = 1.0
         self.vid_frame_mult = 1.2
 
         # Initialize main buttons
         self.live_camera_button = QPushButton("Live Camera")
-        self.live_camera_button.setIcon(QIcon("icons/videocam.svg"))
+        self.live_camera_button.setIcon(QIcon("desktopApp/icons/videocam.svg"))
         self.live_camera_button.setIconSize(QSize(24, 24))
         self.live_camera_button.clicked.connect(self.show_live_camera)
 
         self.video_button = QPushButton("Video")
-        self.video_button.setIcon(QIcon("icons/movie.svg"))
+        self.video_button.setIcon(QIcon("desktopApp/icons/movie.svg"))
         self.video_button.setIconSize(QSize(24, 24))
         self.video_button.clicked.connect(self.show_video)
 
         self.corectness_button = QPushButton("Corectness")
-        self.corectness_button.setIcon(QIcon("icons/add.svg"))
+        self.corectness_button.setIcon(QIcon("desktopApp/icons/add.svg"))
         self.corectness_button.setIconSize(QSize(24, 24))
         self.corectness_button.clicked.connect(self.show_corectness)
 
         self.workout_plans_button = QPushButton("Workout Plans")
-        self.workout_plans_button.setIcon(QIcon("icons/exercise.svg"))
+        self.workout_plans_button.setIcon(QIcon("desktopApp/icons/exercise.svg"))
         self.workout_plans_button.setIconSize(QSize(24, 24))
         self.workout_plans_button.clicked.connect(self.show_workout_plans)
 
         self.settings_button = QPushButton("Settings")
-        self.settings_button.setIcon(QIcon("icons/settings.svg"))
+        self.settings_button.setIcon(QIcon("desktopApp/icons/settings.svg"))
         self.settings_button.setIconSize(QSize(24, 24))
         self.settings_button.clicked.connect(self.show_settings)
 
         self.exit_button = QPushButton("Exit")
-        self.exit_button.setIcon(QIcon("icons/Exit.svg"))
+        self.exit_button.setIcon(QIcon("desktopApp/icons/Exit.svg"))
         self.exit_button.setIconSize(QSize(24, 24))
         self.exit_button.clicked.connect(self.exit_app)
 
         self.back_button = QPushButton("Back to Main")
-        self.back_button.setIcon(QIcon("icons/arrow_back.svg"))
+        self.back_button.setIcon(QIcon("desktopApp/icons/arrow_back.svg"))
         self.back_button.setIconSize(QSize(24, 24))
         self.back_button.clicked.connect(self.show_main)
         self.back_button.hide()
@@ -80,21 +81,21 @@ class MainWidget(QWidget):
 
 
     def show_live_camera(self):
-        self.live_camera_widget = LiveCameraWidget(self.back_button, self.exercise_list, self.cam_frame_mult)
+        self.live_camera_widget = LiveCameraWidget(self.back_button, self.exercise_list, self.cam_frame_mult, self.process)
         self.stacked_layout.addWidget(self.live_camera_widget)
         self.stacked_layout.setCurrentWidget(self.live_camera_widget)
         self.back_button.show()
 
 
     def show_video(self):
-        self.video_widget = VideoWidget(self.back_button, self.vid_frame_mult)
+        self.video_widget = VideoWidget(self.back_button, self.vid_frame_mult, self.process)
         self.stacked_layout.addWidget(self.video_widget)
         self.stacked_layout.setCurrentWidget(self.video_widget)
         self.back_button.show()
 
 
     def show_corectness(self):
-        self.corectness_widget = CorectnessWidget(self.back_button, self.cam_frame_mult)
+        self.corectness_widget = CorectnessWidget(self.back_button, self.cam_frame_mult, self.process)
         self.stacked_layout.addWidget(self.corectness_widget)
         self.stacked_layout.setCurrentWidget(self.corectness_widget)
         self.back_button.show()
@@ -119,6 +120,10 @@ class MainWidget(QWidget):
             self.exercise_list = self.workout_plans_widget.get_exercise_list()
         self.stacked_layout.setCurrentWidget(self.main_widget)
         self.back_button.hide()
+
+
+    def set_process(self, value):
+        self.process = value
 
 
     def set_cam_frame_mult(self, value):

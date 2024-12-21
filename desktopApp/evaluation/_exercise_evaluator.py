@@ -5,7 +5,7 @@ import warnings
 
 from os.path import abspath
 from pathlib import Path
-from ._dependencies import ExerciseEvaluationModel, sample, round_list, ndarray_to_image
+from ._dependencies import ExerciseEvaluationImageModel, sample, round_list, ndarray_to_plot, ndarray_to_trajectory
 from math import ceil
 
 
@@ -32,13 +32,12 @@ class ExerciseEvaluator:
     Class for evaluating exercise data using a pre-trained model.
     """
 
-    def __init__(self):
+    def __init__(self, data_format):
         """
         Initialises the ExerciseEvaluator with a pre-trained model.
         """
-
-        self.__model = ExerciseEvaluationModel(7)
-        self.__model.load_state_dict(torch.load(abspath(fr"{Path(__file__).resolve().parent}\_model\model.pth")))
+        self.__model = ExerciseEvaluationImageModel(7)
+        self.__model.load_state_dict(torch.load(abspath(fr"{Path(__file__).resolve().parent}\_model\{data_format}\model.pth")))
         self.__device = "cuda" if torch.cuda.is_available() else "cpu"
         print(self.__device)
         self.__model.to(self.__device)
@@ -50,6 +49,8 @@ class ExerciseEvaluator:
 
         self.__finding_cutoff = 0.8
         self.__model_frames = 50
+        self.__data_format = data_format
+
 
     def evaluate_data(self, data, expected_class=None):
         """
@@ -72,7 +73,18 @@ class ExerciseEvaluator:
         df = df.applymap(lambda x: round_list(x))
 
         data_array = np.array([row.tolist() for _, row in df.iterrows()])
-        image = ndarray_to_image(sample(data_array, self.__model_frames))
+
+        if self.__data_format == 'unchanged':
+            # to-do 
+            return
+        elif self.__data_format == 'plot':
+            image = ndarray_to_plot(sample(data_array, self.__model_frames))
+        elif self.__data_format == 'trajectory':
+            image = ndarray_to_trajectory(sample(data_array, self.__model_frames))
+        else:
+            print("wrong data format")
+            return 1
+
         tensor = torch.from_numpy(image).to(self.__device, dtype=torch.float32)
 
         with torch.inference_mode():

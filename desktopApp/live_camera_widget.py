@@ -6,8 +6,8 @@ from evaluation import *
 import mediapipe as mp
 from helper_functions import extract_landmarks, exercises_dict, exercises_names
 
-exeval = ExerciseEvaluator()
 fps_mult = 0.0
+process = ''
 
 
 class MyThread(QThread):
@@ -20,6 +20,7 @@ class MyThread(QThread):
         self.cap = None
         self.nedFrams = exercises_dict[0][0] * fps_mult
         self.current_exercise = current_exercise
+        self.exeval = ExerciseEvaluator(process)
 
     def run(self):
         alldata = []
@@ -55,7 +56,7 @@ class MyThread(QThread):
 
                 # jeśli mamy wystarczająco klatek, wyślij je do ewaluacji
                 if len(alldata) >= self.nedFrams:
-                    model_ret = exeval.evaluate_data(alldata,
+                    model_ret = self.exeval.evaluate_data(alldata,
                                                      self.current_exercise if self.current_exercise != 0 else None)
                     alldata = alldata[int(exercises_dict[model_ret][1] * fps_mult):]
 
@@ -83,8 +84,14 @@ class MyThread(QThread):
 
 
 class LiveCameraWidget(QWidget):
-    def __init__(self, back_button, exercise_list=None, camera_fps_mult=0.0):
+    def __init__(self, back_button, exercise_list=None, camera_fps_mult=0.0, process_option=''):
         super().__init__()
+
+        global fps_mult
+        fps_mult = camera_fps_mult
+        global process
+        process = process_option
+
         self.exercise_reps_done = 0
         self.exercise_list = exercise_list
         self.exercise_idx = 0
@@ -104,15 +111,10 @@ class LiveCameraWidget(QWidget):
             self.current_exercise = exercise_list[self.exercise_idx][0]
             self.exercise_reps_to_do = exercise_list[self.exercise_idx][1]
 
-        global fps_mult
-        fps_mult = camera_fps_mult
-
         self.layout = QVBoxLayout()
 
-        # Horizontal layout to hold the camera feed and score label side by side
         self.camera_and_score_layout = QHBoxLayout()
 
-        # Label to display the camera feed
         self.camera_label = QLabel()
         self.camera_and_score_layout.addWidget(self.camera_label)
 
@@ -133,7 +135,6 @@ class LiveCameraWidget(QWidget):
 
         self.camera_thread = None
 
-        # Horizontal layout for the back button
         self.button_layout = QHBoxLayout()
         self.button_layout.addWidget(back_button)
         self.layout.addLayout(self.button_layout)
@@ -144,7 +145,6 @@ class LiveCameraWidget(QWidget):
         if self.camera_thread is None or not self.camera_thread.isRunning():
             self.camera_thread = MyThread(self.current_exercise)
 
-            # setting stats text
             if self.current_exercise == 0:
                 stats_text = "\n".join([f"{name}: {count}" for name, count in self.exercise_counts.items()])
                 self.score_label.setText(f"Statystyki\n\n{stats_text}")

@@ -5,7 +5,7 @@ import warnings
 
 from os.path import abspath
 from pathlib import Path
-from ._dependencies import CorectnessEvaluationModel, sample, round_list, ndarray_to_image
+from ._dependencies import CorectnessEvaluationImageModel, sample, round_list, ndarray_to_plot, ndarray_to_trajectory
 from math import ceil
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -16,32 +16,31 @@ class CorrectnessEvaluator:
     Class for evaluating correctness of an exercise data using a pre-trained model.
     """
 
-    def __init__(self, exercise_idx):
+    def __init__(self, exercise_idx, data_format):
         """
         Initialises the CorrectnessEvaluator with a pre-trained model.
         """
 
-        self.__model = CorectnessEvaluationModel()
+        self.__model = CorectnessEvaluationImageModel()
 
-        # load model, based on param
         if exercise_idx == 1:
             self.__model.load_state_dict(torch.load(
-                abspath(fr"{Path(__file__).resolve().parent}\_model\model_pajac.pth")))
+                abspath(fr"{Path(__file__).resolve().parent}\_model\{data_format}\model_pajac.pth")))
         elif exercise_idx == 2:
             self.__model.load_state_dict(torch.load(
-                abspath(fr"{Path(__file__).resolve().parent}\_model\model_przysiadBok.pth")))
+                abspath(fr"{Path(__file__).resolve().parent}\_model\{data_format}\model_przysiadBok.pth")))
         elif exercise_idx == 3:
             self.__model.load_state_dict(torch.load(
-                abspath(fr"{Path(__file__).resolve().parent}\_model\model_przysiad.pth")))
+                abspath(fr"{Path(__file__).resolve().parent}\_model\{data_format}\model_przysiad.pth")))
         elif exercise_idx == 4:
             self.__model.load_state_dict(torch.load(
-                abspath(fr"{Path(__file__).resolve().parent}\_model\model_brzuszek.pth")))
+                abspath(fr"{Path(__file__).resolve().parent}\_model\{data_format}\model_brzuszek.pth")))
         elif exercise_idx == 5:
             self.__model.load_state_dict(torch.load(
-                abspath(fr"{Path(__file__).resolve().parent}\_model\model_sklonBok.pth")))
+                abspath(fr"{Path(__file__).resolve().parent}\_model\{data_format}\model_sklonBok.pth")))
         elif exercise_idx == 6:
             self.__model.load_state_dict(torch.load(
-                abspath(fr"{Path(__file__).resolve().parent}\_model\model_sklon.pth")))
+                abspath(fr"{Path(__file__).resolve().parent}\_model\{data_format}\model_sklon.pth")))
         else:
             print("błąd ładowania modelu")
             return
@@ -54,6 +53,7 @@ class CorrectnessEvaluator:
         self.__model = torch.jit.trace(self.__model, dummy_input)
 
         self.__model_frames = 50
+        self.__data_format = data_format
 
     def evaluate_data(self, data):
         """
@@ -72,7 +72,18 @@ class CorrectnessEvaluator:
         df = df.applymap(lambda x: round_list(x))
 
         data_array = np.array([row.tolist() for _, row in df.iterrows()])
-        image = ndarray_to_image(sample(data_array, self.__model_frames))
+        
+        if self.__data_format == 'unchanged':
+            # to-do 
+            return
+        elif self.__data_format == 'plot':
+            image = ndarray_to_plot(sample(data_array, self.__model_frames))
+        elif self.__data_format == 'trajectory':
+            image = ndarray_to_trajectory(sample(data_array, self.__model_frames))
+        else:
+            print("wrong data format")
+            return 1
+
         tensor = torch.from_numpy(image).type(torch.float32).to(self.__device)
 
         with torch.inference_mode():
