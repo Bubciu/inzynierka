@@ -120,7 +120,7 @@ def visualisation_heatmap(landmarks: np.ndarray,
     plt.axis('off')
 
     save_full_path = rf"{save_path}\{output_image_name}"
-    plt.savefig(save_full_path, bbox_inches='tight', pad_inches=0)
+    plt.savefig(save_full_path, pad_inches=0)
     if show:
         plt.show()
     plt.close()
@@ -137,7 +137,7 @@ def ndarray_to_heatmap(landmarks: np.ndarray, show: bool = False) -> np.ndarray:
     
     colormap = cm.get_cmap('tab20c', 25)
 
-    fig, ax = plt.subplots(figsize=(8, 8))
+    fig, ax = plt.subplots(figsize=(3, 3))
     
     for point_idx in range(num_points):
         x_coords = landmarks[:, point_idx, 0]

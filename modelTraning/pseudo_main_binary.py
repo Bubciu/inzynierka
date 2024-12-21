@@ -12,9 +12,9 @@ import time
 from funcs.csv_to_tensor import csv_to_ndarray, ndarray_to_tensor
 import funcs.os_operations as oo
 from funcs.helper_functions import accuracy_fn, sample, import_model_state_dict, save_model
-from funcs.visualisation_functions import ndarray_to_image
+from funcs.visualisation_functions import ndarray_to_image, ndarray_to_heatmap
 
-from test_model import TestModelBinary
+from models import ImageModelBinary
 
 
 IMPORT_MODEL = False
@@ -55,6 +55,16 @@ Path to the directory containing CSV data files.
 
 FILE_EXTENSION = ".csv"
 
+DATA_FORMAT = "plots"
+"""
+Format of data that goes to model
+possible options:
+- unchanged
+- plots
+- heatmaps
+"""
+
+
 if __name__ == "__main__":
     """
     Main script execution.
@@ -87,7 +97,18 @@ if __name__ == "__main__":
         print('<accepted>')
 
         tmp = sample(tmp, N_SAMPLES)
-        tmp = ndarray_to_image(tmp)
+
+        if DATA_FORMAT == "unchanged":
+            # to do
+            exit(0)
+        elif DATA_FORMAT == "plots":
+            tmp = ndarray_to_image(tmp)
+        elif DATA_FORMAT == "heatmaps":
+            tmp = ndarray_to_heatmap(tmp)
+        else:
+            print("Wrong data format")
+            exit(0)
+
         primitive_data.append(tmp)
 
         # plot_data(tmp)
@@ -115,9 +136,9 @@ if __name__ == "__main__":
     print("test size:", X_test.shape)
 
     if IMPORT_MODEL:
-        rm = import_model_state_dict(TestModelBinary, NUM_CLASSES, MODEL_PATH, MODEL_IMPORT_NAME)
+        rm = import_model_state_dict(ImageModelBinary, NUM_CLASSES, MODEL_PATH, MODEL_IMPORT_NAME)
     else:
-        rm = TestModelBinary()
+        rm = ImageModelBinary()
 
     rm.to(device)
 
