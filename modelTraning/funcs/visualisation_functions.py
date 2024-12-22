@@ -93,12 +93,12 @@ def ndarray_to_image(landmarks: np.ndarray, show: bool = False) -> np.ndarray:
     return image / 255.0
 
 
-def visualisation_heatmap(landmarks: np.ndarray,
-                       output_image_name: str = "heatmap.png",
+def visualisation_trajectory(landmarks: np.ndarray,
+                       output_image_name: str = "trajectory.png",
                        save_path: str = ".\\",
                        show: bool = False) -> None:
     """
-        Function creates heatmap as png from provided array containing landmarks' x and y coordinates.
+        Function creates trajectory as png from provided array containing landmarks' x and y coordinates.
         :param landmarks: 3-dimensional numpy array with landmarks' coordinates in frames
         :param output_image_name: Name of the output image. If not provided, the plot will be saved as "output_plot.png"
         :param save_path: Full path to a directory to where image should be saved.
@@ -126,9 +126,9 @@ def visualisation_heatmap(landmarks: np.ndarray,
     plt.close()
 
 
-def ndarray_to_heatmap(landmarks: np.ndarray, show: bool = False) -> np.ndarray:
+def ndarray_to_trajectory(landmarks: np.ndarray, show: bool = False) -> np.ndarray:
     """
-        Function creates heatmap as png from provided array containing landmarks' x and y coordinates.
+        Function creates trajectory as png from provided array containing landmarks' x and y coordinates.
         :param landmarks: 3-dimensional numpy array with landmarks' coordinates in frames
         :param show: Specifies if the image should be shown.
         :return: Image with pixel colour in rage <0, 1>.

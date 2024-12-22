@@ -12,7 +12,7 @@ import time
 from funcs.csv_to_tensor import csv_to_ndarray, ndarray_to_tensor
 import funcs.os_operations as oo
 from funcs.helper_functions import accuracy_fn, sample, import_model_state_dict, save_model
-from funcs.visualisation_functions import ndarray_to_image, ndarray_to_heatmap
+from funcs.visualisation_functions import ndarray_to_image, ndarray_to_trajectory
 
 from models import ImageModelBinary
 
@@ -61,7 +61,7 @@ Format of data that goes to model
 possible options:
 - unchanged
 - plots
-- heatmaps
+- trajectories
 """
 
 
@@ -103,8 +103,8 @@ if __name__ == "__main__":
             exit(0)
         elif DATA_FORMAT == "plots":
             tmp = ndarray_to_image(tmp)
-        elif DATA_FORMAT == "heatmaps":
-            tmp = ndarray_to_heatmap(tmp)
+        elif DATA_FORMAT == "trajectories":
+            tmp = ndarray_to_trajectory(tmp)
         else:
             print("Wrong data format")
             exit(0)
