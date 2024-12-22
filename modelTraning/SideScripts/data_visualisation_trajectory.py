@@ -1,9 +1,9 @@
 from funcs.os_operations import files_in_directory
 from funcs.csv_to_tensor import csv_to_ndarray
 from funcs.helper_functions import sample
-from funcs.visualisation_functions import visualisation_heatmap
+from funcs.visualisation_functions import visualisation_trajectory
 
-PLOT_SAVE_PATH = "Visualisations/Heatmaps"
+PLOT_SAVE_PATH = "Visualisations/Trajectories"
 
 if __name__ == "__main__":
 
@@ -22,5 +22,5 @@ if __name__ == "__main__":
 
         tmp = sample(tmp, 50)
 
-        visualisation_heatmap(tmp, name.rsplit('.', 1)[0] + ".png", PLOT_SAVE_PATH)
+        visualisation_trajectory(tmp, name.rsplit('.', 1)[0] + ".png", PLOT_SAVE_PATH)
         
