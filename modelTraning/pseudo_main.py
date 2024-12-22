@@ -15,7 +15,7 @@ import funcs.os_operations as oo
 from funcs.helper_functions import accuracy_fn, sample, import_model_state_dict, save_model
 from funcs.visualisation_functions import ndarray_to_image, ndarray_to_trajectory
 
-from models import ImageModel
+from models import Model, ImageModel
 
 
 IMPORT_MODEL = False
@@ -100,8 +100,7 @@ if __name__ == "__main__":
         tmp = sample(tmp, N_SAMPLES)
 
         if DATA_FORMAT == "unchanged":
-            # to do
-            exit(0)
+            pass
         elif DATA_FORMAT == "plots":
             tmp = ndarray_to_image(tmp)
         elif DATA_FORMAT == "trajectories":
@@ -145,9 +144,15 @@ if __name__ == "__main__":
     print("test size:", X_test.shape)
 
     if IMPORT_MODEL:
-        rm = import_model_state_dict(ImageModel, NUM_CLASSES, MODEL_PATH, MODEL_IMPORT_NAME)
+        if DATA_FORMAT == 'unchanged':
+            rm = import_model_state_dict(Model, NUM_CLASSES, MODEL_PATH, MODEL_IMPORT_NAME)
+        elif DATA_FORMAT == 'plots' or DATA_FORMAT == 'trajectories':
+            rm = import_model_state_dict(ImageModel, NUM_CLASSES, MODEL_PATH, MODEL_IMPORT_NAME)
     else:
-        rm = ImageModel(NUM_CLASSES)
+        if DATA_FORMAT == 'unchanged':
+            rm = Model(NUM_CLASSES)
+        elif DATA_FORMAT == 'plots' or DATA_FORMAT == 'trajectories':
+            rm = ImageModel(NUM_CLASSES)
 
     rm.to(device)
 

@@ -14,7 +14,7 @@ import funcs.os_operations as oo
 from funcs.helper_functions import accuracy_fn, sample, import_model_state_dict, save_model
 from funcs.visualisation_functions import ndarray_to_image, ndarray_to_trajectory
 
-from models import ImageModelBinary
+from models import ModelBinary, ImageModelBinary
 
 
 IMPORT_MODEL = False
@@ -48,14 +48,14 @@ N_SAMPLES = 50
 Number of samples to use for each instance.
 """
 
-DATA_PATH = "correctness/CSVs/brzuszek"
+DATA_PATH = "correctness/CSVs/sklonBok"
 """
 Path to the directory containing CSV data files.
 """
 
 FILE_EXTENSION = ".csv"
 
-DATA_FORMAT = "plots"
+DATA_FORMAT = "trajectories"
 """
 Format of data that goes to model
 possible options:
@@ -99,8 +99,7 @@ if __name__ == "__main__":
         tmp = sample(tmp, N_SAMPLES)
 
         if DATA_FORMAT == "unchanged":
-            # to do
-            exit(0)
+            pass
         elif DATA_FORMAT == "plots":
             tmp = ndarray_to_image(tmp)
         elif DATA_FORMAT == "trajectories":
@@ -136,10 +135,16 @@ if __name__ == "__main__":
     print("test size:", X_test.shape)
 
     if IMPORT_MODEL:
-        rm = import_model_state_dict(ImageModelBinary, NUM_CLASSES, MODEL_PATH, MODEL_IMPORT_NAME)
+        if DATA_FORMAT == 'unchanged':
+            rm = import_model_state_dict(ModelBinary, MODEL_PATH, MODEL_IMPORT_NAME)
+        elif DATA_FORMAT == 'plots' or DATA_FORMAT == 'trajectories':
+            rm = import_model_state_dict(ImageModelBinary, MODEL_PATH, MODEL_IMPORT_NAME)
     else:
-        rm = ImageModelBinary()
-
+        if DATA_FORMAT == 'unchanged':
+            rm = ModelBinary()
+        elif DATA_FORMAT == 'plots' or DATA_FORMAT == 'trajectories':
+            rm = ImageModelBinary()
+        
     rm.to(device)
 
     # if something wrong, try this: nn.BCELoss()
