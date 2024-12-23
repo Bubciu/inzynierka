@@ -17,7 +17,7 @@ class MainWidget(QWidget):
         self.stacked_layout = QStackedLayout()
 
         # settings
-        self.process = 'plot'
+        self.process = 'unchanged'
         self.cam_frame_mult = 1.0
         self.vid_frame_mult = 1.2
 
