@@ -5,7 +5,7 @@ import warnings
 
 from os.path import abspath
 from pathlib import Path
-from ._dependencies import CorectnessEvaluationImageModel, sample, round_list, ndarray_to_plot, ndarray_to_trajectory
+from ._dependencies import CorectnessEvaluationModel, CorectnessEvaluationImageModel, sample, round_list, ndarray_to_plot, ndarray_to_trajectory
 from math import ceil
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -21,7 +21,10 @@ class CorrectnessEvaluator:
         Initialises the CorrectnessEvaluator with a pre-trained model.
         """
 
-        self.__model = CorectnessEvaluationImageModel()
+        if data_format == 'unchanged':
+            self.__model = CorectnessEvaluationModel()
+        elif data_format == 'plot' or data_format == 'trajectory':
+            self.__model = CorectnessEvaluationImageModel()
 
         if exercise_idx == 1:
             self.__model.load_state_dict(torch.load(
@@ -49,7 +52,10 @@ class CorrectnessEvaluator:
         self.__model.to(self.__device)
         self.__model.eval()
 
-        dummy_input = torch.randn(300, 300, 3).to(self.__device)
+        if data_format == 'unchanged':
+            dummy_input = torch.randn(1, 50, 25, 2).to(self.__device)
+        elif data_format == 'plot' or data_format == 'trajectory':
+            dummy_input = torch.randn(300, 300, 3).to(self.__device)
         self.__model = torch.jit.trace(self.__model, dummy_input)
 
         self.__model_frames = 50
@@ -72,19 +78,20 @@ class CorrectnessEvaluator:
         df = df.applymap(lambda x: round_list(x))
 
         data_array = np.array([row.tolist() for _, row in df.iterrows()])
+        sampled = sample(data_array, self.__model_frames)
         
         if self.__data_format == 'unchanged':
-            # to-do 
-            return
+            data = sampled
+            data = np.expand_dims(data, axis=0)
         elif self.__data_format == 'plot':
-            image = ndarray_to_plot(sample(data_array, self.__model_frames))
+            data = ndarray_to_plot(sampled)
         elif self.__data_format == 'trajectory':
-            image = ndarray_to_trajectory(sample(data_array, self.__model_frames))
+            data = ndarray_to_trajectory(sampled)
         else:
             print("wrong data format")
             return 1
 
-        tensor = torch.from_numpy(image).type(torch.float32).to(self.__device)
+        tensor = torch.from_numpy(data).type(torch.float32).to(self.__device)
 
         with torch.inference_mode():
             logit = self.__model(tensor)
