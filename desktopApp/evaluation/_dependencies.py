@@ -21,7 +21,7 @@ class ExerciseEvaluationModel(nn.Module):
         super().__init__()
 
         # 2D Convolutional layers
-        self.conv1 = nn.Conv2d(2, 32, kernel_size=3, padding=1)
+        self.conv1 = nn.Conv2d(50, 32, kernel_size=3, padding=1)
         self.relu1 = nn.ReLU()
         self.maxpool1 = nn.MaxPool2d(kernel_size=2, stride=2)
 
@@ -30,7 +30,7 @@ class ExerciseEvaluationModel(nn.Module):
         self.maxpool2 = nn.MaxPool2d(kernel_size=1)
 
         # Fully connected layers
-        self.fc1 = nn.Linear(64 * 25 * 12, 128) #liczba kanałów * szerokość/2*100 * 1
+        self.fc1 = nn.Linear(64 * 12, 128) #liczba kanałów * szerokość/2*100 * 1
         self.relu3 = nn.ReLU()
         self.fc2 = nn.Linear(128, num_classes)
 
@@ -41,7 +41,6 @@ class ExerciseEvaluationModel(nn.Module):
         :return: Output tensor of shape (batch_size, num_classes)
         """
 
-        x = x.permute(0, 3, 1, 2)
         x = self.conv1(x)
         x = self.relu1(x)
         x = self.maxpool1(x)
@@ -50,7 +49,7 @@ class ExerciseEvaluationModel(nn.Module):
         x = self.relu2(x)
         x = self.maxpool2(x)
 
-        x = x.contiguous().view(x.size(0), -1)        # conv2-n_channels * (img_width/2 * 100) * 1
+        x = x.view(x.size(0), -1)
         x = self.fc1(x)
         x = self.relu3(x)
         x = self.fc2(x)
@@ -74,7 +73,7 @@ class CorectnessEvaluationModel(nn.Module):
         super().__init__()
 
         # 2D Convolutional layers
-        self.conv1 = nn.Conv2d(2, 32, kernel_size=3, padding=1)
+        self.conv1 = nn.Conv2d(50, 32, kernel_size=3, padding=1)
         self.relu1 = nn.ReLU()
         self.maxpool1 = nn.MaxPool2d(kernel_size=2, stride=2)
 
@@ -83,7 +82,7 @@ class CorectnessEvaluationModel(nn.Module):
         self.maxpool2 = nn.MaxPool2d(kernel_size=1, stride=1)
 
         # Fully connected layers
-        self.fc1 = nn.Linear(64 * 25 * 12, 128) #liczba kanałów * szerokość/2*100 * 1
+        self.fc1 = nn.Linear(64 * 12, 128) #liczba kanałów * szerokość/2*100 * 1
         self.relu3 = nn.ReLU()
         self.fc2 = nn.Linear(128, 1)
 
@@ -94,7 +93,6 @@ class CorectnessEvaluationModel(nn.Module):
         :return: Output tensor of shape (batch_size, num_classes)
         """
 
-        x = x.permute(0, 3, 1, 2)
         x = self.conv1(x)
         x = self.relu1(x)
         x = self.maxpool1(x)
@@ -103,7 +101,7 @@ class CorectnessEvaluationModel(nn.Module):
         x = self.relu2(x)
         x = self.maxpool2(x)
 
-        x = x.contiguous().view(x.size(0), -1)
+        x = x.view(x.size(0), -1)
         x = self.fc1(x)
         x = self.relu3(x)
         x = self.fc2(x)
