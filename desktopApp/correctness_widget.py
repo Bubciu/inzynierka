@@ -10,6 +10,7 @@ from evaluation import *
 
 fps_mult = 0.0
 process = ''
+correctness_process = ''
 
 
 class MyThread(QThread):
@@ -23,7 +24,7 @@ class MyThread(QThread):
         self.current_exercise = current_exercise
         self.nedFrams = exercises_dict[current_exercise][0] * fps_mult
         self.exercise_evaluator = ExerciseEvaluator(process)
-        self.correctness_evaluator = CorrectnessEvaluator(current_exercise, process)
+        self.correctness_evaluator = CorrectnessEvaluator(current_exercise, correctness_process)
 
     def run(self):
         alldata = []
@@ -73,7 +74,7 @@ class MyThread(QThread):
     def update_exercise(self, new_exercise):
         self.current_exercise = new_exercise
         self.nedFrams = exercises_dict[new_exercise][0] * fps_mult
-        self.correctness_evaluator = CorrectnessEvaluator(new_exercise, process)  # Aktualizacja evaluatora poprawności
+        self.correctness_evaluator = CorrectnessEvaluator(new_exercise, correctness_process)  # Aktualizacja evaluatora poprawności
 
     @staticmethod
     def cvimage_to_label(image):
@@ -82,13 +83,15 @@ class MyThread(QThread):
 
 
 class CorectnessWidget(QWidget):
-    def __init__(self, back_button, camera_fps_mult, process_option):
+    def __init__(self, back_button, camera_fps_mult, process_option, correctness_option):
         super().__init__()
 
         global fps_mult
         fps_mult = camera_fps_mult
         global process
         process = process_option
+        global correctness_process
+        correctness_process = correctness_option
 
         self.correct_reps = 0
         self.incorrect_reps = 0

@@ -18,7 +18,12 @@ class SettingsWidget(QWidget):
         self.process_combo = QComboBox()
         self.process_combo.addItems(["No Processing", "Plot", "Trajectory"])
         self.process_combo.setCurrentIndex(default_process)
-        self.process_combo.currentIndexChanged.connect(self.update_process)
+        self.process_combo.currentIndexChanged.connect(self.update_exercise_process)
+
+        self.correctness_process_combo = QComboBox()
+        self.correctness_process_combo.addItems(["No Processing", "Plot", "Trajectory"])
+        self.correctness_process_combo.setCurrentIndex(default_process)
+        self.correctness_process_combo.currentIndexChanged.connect(self.update_correctness_process)
 
         self.camera_fps_combo = QComboBox()
         self.camera_fps_combo.addItems(["20 FPS", "24 FPS", "30 FPS"])
@@ -34,14 +39,20 @@ class SettingsWidget(QWidget):
         self.layout.addWidget(self.label)
 
         self.layout.addWidget(self.process_combo)
+        self.layout.addWidget(self.correctness_process_combo)
         self.layout.addWidget(self.camera_fps_combo)
         self.layout.addWidget(self.video_fps_combo)
 
         self.layout.addWidget(back_button)
         self.setLayout(self.layout)
 
-    def update_process(self, index):
+
+    def update_exercise_process(self, index):
         self.parent().set_process(self.processing_options[index])
+
+
+    def update_correctness_process(self, index):
+        self.parent().set_correctness_process(self.processing_options[index])
 
 
     def update_camera_fps(self, index):
