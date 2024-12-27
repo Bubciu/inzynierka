@@ -22,9 +22,18 @@ IMPORT_MODEL = False
 SAVE_MODEL = False
 MODEL_PATH = 'Models'
 MODEL_IMPORT_NAME = ''
-MODEL_SAVE_NAME = ''
+MODEL_SAVE_NAME = 'model_unchanged'
 """
 Model hyper-parameters.
+"""
+
+DATA_FORMAT = "trajectories"
+"""
+Format of data that goes to model
+possible options:
+- unchanged
+- plots
+- trajectories
 """
 
 NUM_CLASSES = 7
@@ -55,15 +64,6 @@ Path to the directory containing CSV data files.
 """
 
 FILE_EXTENSION = ".csv"
-
-DATA_FORMAT = "trajectories"
-"""
-Format of data that goes to model
-possible options:
-- unchanged
-- plots
-- trajectories
-"""
 
 
 if __name__ == "__main__":
