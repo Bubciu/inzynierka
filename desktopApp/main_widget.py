@@ -18,6 +18,7 @@ class MainWidget(QWidget):
 
         # settings
         self.process = 'unchanged'
+        self.correctness_process = 'unchanged'
         self.cam_frame_mult = 1.0
         self.vid_frame_mult = 1.2
 
@@ -95,7 +96,7 @@ class MainWidget(QWidget):
 
 
     def show_corectness(self):
-        self.corectness_widget = CorectnessWidget(self.back_button, self.cam_frame_mult, self.process)
+        self.corectness_widget = CorectnessWidget(self.back_button, self.cam_frame_mult, self.process, self.correctness_process)
         self.stacked_layout.addWidget(self.corectness_widget)
         self.stacked_layout.setCurrentWidget(self.corectness_widget)
         self.back_button.show()
@@ -124,6 +125,10 @@ class MainWidget(QWidget):
 
     def set_process(self, value):
         self.process = value
+
+
+    def set_correctness_process(self, value):
+        self.correctness_process = value
 
 
     def set_cam_frame_mult(self, value):
