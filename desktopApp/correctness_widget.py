@@ -73,7 +73,7 @@ class MyThread(QThread):
     def update_exercise(self, new_exercise):
         self.current_exercise = new_exercise
         self.nedFrams = exercises_dict[new_exercise][0] * fps_mult
-        self.correctness_evaluator = CorrectnessEvaluator(new_exercise)  # Aktualizacja evaluatora poprawności
+        self.correctness_evaluator = CorrectnessEvaluator(new_exercise, process)  # Aktualizacja evaluatora poprawności
 
     @staticmethod
     def cvimage_to_label(image):
@@ -144,6 +144,8 @@ class CorectnessWidget(QWidget):
 
     def close_camera(self):
         if self.camera_thread is not None:
+            self.correct_reps = 0
+            self.incorrect_reps = 0
             self.camera_thread.stop()
             self.camera_thread = None
             self.close_btn.hide()
@@ -151,6 +153,8 @@ class CorectnessWidget(QWidget):
 
     def change_exercise(self):
         new_exercise = self.exercise_combo.currentData()
+        self.correct_reps = 0
+        self.incorrect_reps = 0
         if new_exercise != self.current_exercise:
             self.current_exercise = new_exercise
             if self.camera_thread is not None:
