@@ -89,7 +89,7 @@ class MainWidget(QWidget):
 
 
     def show_video(self):
-        self.video_widget = VideoWidget(self.back_button, self.vid_frame_mult, self.process)
+        self.video_widget = VideoWidget(self.back_button, self.vid_frame_mult, self.process, self.correctness_process)
         self.stacked_layout.addWidget(self.video_widget)
         self.stacked_layout.setCurrentWidget(self.video_widget)
         self.back_button.show()
