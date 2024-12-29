@@ -14,15 +14,15 @@ class WorkoutPlansWidget(QWidget):
         self.label = QLabel("Workout Plans")
         self.layout.addWidget(self.label)
 
-        # List widget for displaying current exercises
         self.list_widget = QListWidget()
         self.update_list_widget()
 
-        # Button for removing selected exercise
         self.remove_button = QPushButton("Remove Selected Exercise")
         self.remove_button.clicked.connect(self.remove_exercise)
 
-        # Layout for adding new exercises
+        self.clear_button = QPushButton("Clear Workout Plan")
+        self.clear_button.clicked.connect(self.clear_plan)
+
         self.add_exercise_layout = QGridLayout()
         self.add_exercise_layout.setAlignment(Qt.AlignTop)
 
@@ -40,13 +40,14 @@ class WorkoutPlansWidget(QWidget):
             self.add_exercise_layout.addWidget(spinbox, i - 1, 1)
             self.add_exercise_layout.addWidget(add_button, i - 1, 2)
 
-        # Add widgets to the main layout
         self.layout.addWidget(self.list_widget)
         self.layout.addWidget(self.remove_button)
+        self.layout.addWidget(self.clear_button)
         self.layout.addLayout(self.add_exercise_layout)
         self.layout.addWidget(back_button)
 
         self.setLayout(self.layout)
+
 
     def update_list_widget(self):
         self.list_widget.clear()
@@ -55,16 +56,27 @@ class WorkoutPlansWidget(QWidget):
             item = QListWidgetItem(item_text)
             self.list_widget.addItem(item)
 
+
     def add_exercise(self, exercise_id, count):
-        new_exercise = [exercise_id, count]
-        self.exercise_list.append(new_exercise)
+        if len(self.exercise_list) != 0 and self.exercise_list[-1][0] == exercise_id:
+            self.exercise_list[-1][1] += count
+        else:  
+            new_exercise = [exercise_id, count]
+            self.exercise_list.append(new_exercise)
         self.update_list_widget()
+
 
     def remove_exercise(self):
         selected_item = self.list_widget.currentRow()
         if selected_item >= 0:
             del self.exercise_list[selected_item]
             self.update_list_widget()
+
+
+    def clear_plan(self):
+        self.exercise_list = []
+        self.update_list_widget()
+
 
     def get_exercise_list(self):
         return self.exercise_list
