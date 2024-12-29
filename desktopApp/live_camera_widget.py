@@ -41,7 +41,6 @@ class MyThread(QThread):
                 label_frame = self.cvimage_to_label(frame)
                 self.frame_signal.emit(label_frame)
 
-                # mediapipe
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 frame.flags.writeable = False
                 results = holistic.process(frame)
@@ -147,9 +146,9 @@ class LiveCameraWidget(QWidget):
 
             if self.current_exercise == 0:
                 stats_text = "\n".join([f"{name}: {count}" for name, count in self.exercise_counts.items()])
-                self.score_label.setText(f"Statystyki\n\n{stats_text}")
+                self.score_label.setText(f"Stats\n\n{stats_text}")
             else:
-                self.score_label.setText(f"{exercises_names[self.current_exercise]}: "
+                self.score_label.setText(f"{exercises_names[self.current_exercise][0]}: "
                                                     f"{self.exercise_reps_done}/{self.exercise_reps_to_do}")
             
             self.score_label.adjustSize()
@@ -185,7 +184,7 @@ class LiveCameraWidget(QWidget):
             exercise_name = exercises_names[decision][0]
             self.exercise_counts[exercise_name] += 1
             stats_text = "\n".join([f"{name}: {count}" for name, count in self.exercise_counts.items()])
-            self.score_label.setText(f"Statystyki\n\n{stats_text}")
+            self.score_label.setText(f"Stats\n\n{stats_text}")
             
         elif decision == self.current_exercise:
             self.exercise_reps_done += 1
@@ -201,7 +200,7 @@ class LiveCameraWidget(QWidget):
                     self.exercise_reps_to_do = self.exercise_list[self.exercise_idx][1]
                     self.exercise_reps_done = 0
 
-            self.score_label.setText(f"{exercises_names[self.current_exercise]}: "
+            self.score_label.setText(f"{exercises_names[self.current_exercise][0]}: "
                                         f"{self.exercise_reps_done}/{self.exercise_reps_to_do}")
             
         self.score_label.adjustSize()
