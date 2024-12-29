@@ -67,11 +67,11 @@ class VideoWidget(QWidget):
 
         self.layout = QVBoxLayout()
 
-        self.file_button = QPushButton("Wybierz plik")
+        self.file_button = QPushButton("Choose File")
         self.file_button.clicked.connect(self.load_file)
         self.layout.addWidget(self.file_button)
 
-        self.file_label = QLabel("Wybrany plik: Brak")
+        self.file_label = QLabel("Chosen File: None")
         self.file_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.layout.addWidget(self.file_label)
 
@@ -82,7 +82,7 @@ class VideoWidget(QWidget):
 
         self.stats_layout = QVBoxLayout()
         self.stats_label = QLabel(
-            "Statystyki\n\nJumping Jack: 0\nSide Leg Squat: 0\nSquat: 0\nStanding Sit-up: 0\nSide Bend: 0\nBend: 0")
+            "Stats\n\nJumping Jack: 0\nSide Leg Squat: 0\nSquat: 0\nStanding Sit-up: 0\nSide Bend: 0\nBend: 0")
         font = QFont()
         font.setPointSize(30)
         self.stats_label.setFont(font)
@@ -117,7 +117,7 @@ class VideoWidget(QWidget):
                                                    options=options)
         if file_path:
             self.video_path = file_path
-            self.file_label.setText(f"Wybrany plik: {file_path.split('/')[-1]}")
+            self.file_label.setText(f"Chosen File: {file_path.split('/')[-1]}")
             self.start_button.setEnabled(True)
 
     def start_video(self):
@@ -142,7 +142,7 @@ class VideoWidget(QWidget):
             "Bend": 0
         }
         self.stats_label.setText(
-            "Statystyki\n\nJumping Jack: 0\nSide Leg Squat: 0\nSquat: 0\nStanding Sit-up: 0\nSide Bend: 0\nBend: 0")
+            "Stats\n\nJumping Jack: 0\nSide Leg Squat: 0\nSquat: 0\nStanding Sit-up: 0\nSide Bend: 0\nBend: 0")
 
     @Slot(QImage)
     def update_frame(self, image):
@@ -153,7 +153,7 @@ class VideoWidget(QWidget):
         exercise_name = exercises_names[decision][0]
         self.exercise_counts[exercise_name] += 1
         stats_text = "\n".join([f"{name}: {count}" for name, count in self.exercise_counts.items()])
-        self.stats_label.setText(f"Statystyki\n\n{stats_text}")
+        self.stats_label.setText(f"Stats\n\n{stats_text}")
 
     @Slot()
     def on_video_finished(self):
