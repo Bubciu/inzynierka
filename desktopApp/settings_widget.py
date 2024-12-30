@@ -21,7 +21,8 @@ class SettingsWidget(QWidget):
         self.layout.addWidget(separator)
 
         self.processing_options = {0: 'unchanged', 1: 'plot', 2: 'trajectory'}
-        default_process = [key for key, value in self.processing_options.items() if value == parent.process][0]
+        default_exercise_process = [key for key, value in self.processing_options.items() if value == parent.process][0]
+        default_correctness_process = [key for key, value in self.processing_options.items() if value == parent.correctness_process][0]
 
         self.fps_options = {0: 0.8, 1: 1.0, 2: 1.2}
         default_cam_fps = [key for key, value in self.fps_options.items() if value == parent.cam_frame_mult][0]
@@ -32,14 +33,14 @@ class SettingsWidget(QWidget):
 
         self.process_combo = QComboBox()
         self.process_combo.addItems(["No Processing", "Plot", "Trajectory"])
-        self.process_combo.setCurrentIndex(default_process)
+        self.process_combo.setCurrentIndex(default_exercise_process)
         self.process_combo.setStyleSheet("QComboBox { background-color: white; border: 1px solid #ccc; border-radius: 5px; padding: 5px; font-size: 16px; }")
         self.process_combo.currentIndexChanged.connect(self.update_exercise_process)
         form_layout.addRow(QLabel("Exercise Processing:"), self.process_combo)
 
         self.correctness_process_combo = QComboBox()
         self.correctness_process_combo.addItems(["No Processing", "Plot", "Trajectory"])
-        self.correctness_process_combo.setCurrentIndex(default_process)
+        self.correctness_process_combo.setCurrentIndex(default_correctness_process)
         self.correctness_process_combo.setStyleSheet("QComboBox { background-color: white; border: 1px solid #ccc; border-radius: 5px; padding: 5px; font-size: 16px; }")
         self.correctness_process_combo.currentIndexChanged.connect(self.update_correctness_process)
         form_layout.addRow(QLabel("Correctness Processing:"), self.correctness_process_combo)
