@@ -149,6 +149,7 @@ class CorectnessWidget(QWidget):
         if self.camera_thread is not None:
             self.correct_reps = 0
             self.incorrect_reps = 0
+            self.update_stats()
             self.camera_thread.stop()
             self.camera_thread = None
             self.close_btn.hide()
@@ -158,10 +159,17 @@ class CorectnessWidget(QWidget):
         new_exercise = self.exercise_combo.currentData()
         self.correct_reps = 0
         self.incorrect_reps = 0
+        self.update_stats()
         if new_exercise != self.current_exercise:
             self.current_exercise = new_exercise
             if self.camera_thread is not None:
                 self.camera_thread.update_exercise(new_exercise)
+
+
+    def update_stats(self):
+        self.score_label.setText(f"Correct: {self.correct_reps}\nIncorrect: {self.incorrect_reps}")
+        self.score_label.adjustSize()
+
 
     @Slot(QImage)
     def setImage(self, image):
@@ -174,6 +182,5 @@ class CorectnessWidget(QWidget):
             self.correct_reps += 1
         else:
             self.incorrect_reps += 1
-
-        self.score_label.setText(f"Correct: {self.correct_reps}\nIncorrect: {self.incorrect_reps}")
-        self.score_label.adjustSize()
+        self.update_stats()
+        
